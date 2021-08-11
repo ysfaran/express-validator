@@ -1,4 +1,4 @@
-import { CustomValidator, DynamicMessageCreator } from '../base';
+import { CustomValidator, DynamicMessageCreator, ExtensionValidator } from '../base';
 import * as Options from '../options';
 
 export interface Validators<Return> {
@@ -6,6 +6,9 @@ export interface Validators<Return> {
   not(): Return;
   withMessage(message: DynamicMessageCreator): Return;
   withMessage(message: any): Return;
+
+  // extension validator
+  extension(validator: ExtensionValidator, options: any): Return;
 
   // custom validators
   custom(validator: CustomValidator): Return;

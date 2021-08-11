@@ -1,17 +1,17 @@
 import * as validator from 'validator';
-import { CustomValidator, StandardValidator } from '../base';
-import { CustomValidation, StandardValidation } from '../context-items';
+import { CustomValidator, ExtensionValidator, StandardValidator } from '../base';
+import { CustomValidation, ExtensionValidation, StandardValidation } from '../context-items';
 import { ContextBuilder } from '../context-builder';
 import * as Options from '../options';
 import { Validators } from './validators';
 
 export class ValidatorsImpl<Chain> implements Validators<Chain> {
-  private lastValidator: CustomValidation | StandardValidation;
+  private lastValidator: CustomValidation | ExtensionValidation | StandardValidation;
   private negateNext = false;
 
   constructor(private readonly builder: ContextBuilder, private readonly chain: Chain) {}
 
-  private addItem(item: CustomValidation | StandardValidation) {
+  private addItem(item: CustomValidation | ExtensionValidation | StandardValidation) {
     this.builder.addItem(item);
     this.lastValidator = item;
     // Reset this.negateNext so that next validation isn't negated too
@@ -73,6 +73,11 @@ export class ValidatorsImpl<Chain> implements Validators<Chain> {
   notEmpty(options?: Options.IsEmptyOptions) {
     this.not();
     return this.isEmpty(options);
+  }
+
+  // extension validator
+  extension(validator: ExtensionValidator, options: any) {
+    return this.addItem(new ExtensionValidation(validator, options, this.negateNext));
   }
 
   // Standard validators

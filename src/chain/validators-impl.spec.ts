@@ -1,6 +1,6 @@
 import * as validator from 'validator';
 import { Meta } from '../base';
-import { CustomValidation, StandardValidation } from '../context-items';
+import { CustomValidation, ExtensionValidation, StandardValidation } from '../context-items';
 import { ContextBuilder } from '../context-builder';
 import { Validators } from './validators';
 import { ValidatorsImpl } from './validators-impl';
@@ -58,6 +58,18 @@ describe('#custom()', () => {
 
     expect(ret).toBe(chain);
     expect(builder.addItem).toHaveBeenCalledWith(new CustomValidation(validator, false));
+  });
+});
+
+describe('#extension()', () => {
+  it('adds extension validator to the context', () => {
+    const validator = jest.fn();
+    const ret = validators.extension(validator, { customOption: true });
+
+    expect(ret).toBe(chain);
+    expect(builder.addItem).toHaveBeenCalledWith(
+      new ExtensionValidation(validator, { customOption: true }, false),
+    );
   });
 });
 
